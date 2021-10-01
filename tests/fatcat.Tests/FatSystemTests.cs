@@ -56,5 +56,19 @@ namespace fatcat.Tests
             yield return new object[] { imagePath, "/", new[] { new TestEntryInfo("files", true), new TestEntryInfo("hello.txt", false) } };
             yield return new object[] { imagePath, "/files/", new[] { new TestEntryInfo("other_file.txt", false), new TestEntryInfo("", true) } };
         }
+
+        [Fact]
+        public async Task GetEntriesFailure()
+        {
+            using var serviceProvider = TestHelper.CreateDefault()
+                .BuildServiceProvider();
+            using var stream = TestHelper.GetTestFileStream("hello-world.img");
+
+            var system = serviceProvider.GetRequiredService<FatSystem>();
+            await system.Initialize(stream).ConfigureAwait(false);
+
+            var entries = await system.GetEntries("/xyz");
+            entries.Should().BeNull();
+        }
     }
 }

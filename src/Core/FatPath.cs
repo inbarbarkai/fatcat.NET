@@ -35,5 +35,7 @@ namespace fatcat.Core
         public string BaseName => this.Parts.Last();
 
         public string[] Parts { get; }
+
+        public static implicit operator FatPath(string path) => new FatPath(path);
     }
 }

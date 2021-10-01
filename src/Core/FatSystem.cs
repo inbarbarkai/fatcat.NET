@@ -149,7 +149,7 @@ namespace fatcat.Core
                 this.BytesPerSector = (ushort)(Utilities.ReadShort(buffer, FAT_BYTES_PER_SECTOR) & 0xffff);
                 this.SectorsPerCluster = (ulong)(buffer[FAT_SECTORS_PER_CLUSTER] & 0xff);
                 this.ReservedSectors = (ushort)(Utilities.ReadShort(buffer, FAT_RESERVED_SECTORS) & 0xffff);
-                this.OemName = Encoding.ASCII.GetString(buffer, FAT_DISK_OEM, FAT_DISK_OEM_SIZE);
+                this.OemName = Encoding.ASCII.GetString(buffer, FAT_DISK_OEM, FAT_DISK_OEM_SIZE).Trim('\0');
                 this.Fats = buffer[FAT_FATS];
 
                 this.SectorsPerFat = (ushort)(Utilities.ReadShort(buffer, FAT16_SECTORS_PER_FAT) & 0xffff);
@@ -157,8 +157,8 @@ namespace fatcat.Core
                 if (this.SectorsPerFat != 0)
                 {
                     this.Type = FatType.Fat16;
-                    this.DiskLabel = Encoding.ASCII.GetString(buffer, FAT16_DISK_LABEL, FAT16_DISK_LABEL_SIZE);
-                    this.FsType = Encoding.ASCII.GetString(buffer, FAT16_DISK_FS, FAT16_DISK_FS_SIZE);
+                    this.DiskLabel = Encoding.ASCII.GetString(buffer, FAT16_DISK_LABEL, FAT16_DISK_LABEL_SIZE).Trim();
+                    this.FsType = Encoding.ASCII.GetString(buffer, FAT16_DISK_FS, FAT16_DISK_FS_SIZE).Trim();
                     this.RootEntries = (ushort)(Utilities.ReadShort(buffer, FAT16_ROOT_ENTRIES) & 0xffff);
                     this.RootDirectory = 0;
 
@@ -179,9 +179,9 @@ namespace fatcat.Core
                     this.Bits = 32;
                     this.SectorsPerFat = Utilities.ReadLong(buffer, FAT_SECTORS_PER_FAT) & 0xffffffff;
                     this.TotalSectors = Utilities.ReadLong(buffer, FAT_TOTAL_SECTORS) & 0xffffffff;
-                    this.DiskLabel = Encoding.ASCII.GetString(buffer, FAT_DISK_LABEL, FAT_DISK_LABEL_SIZE);
+                    this.DiskLabel = Encoding.ASCII.GetString(buffer, FAT_DISK_LABEL, FAT_DISK_LABEL_SIZE).Trim();
                     this.RootDirectory = Utilities.ReadLong(buffer, FAT_ROOT_DIRECTORY) & 0xffffffff;
-                    this.FsType = Encoding.ASCII.GetString(buffer, FAT_DISK_FS, FAT_DISK_FS_SIZE);
+                    this.FsType = Encoding.ASCII.GetString(buffer, FAT_DISK_FS, FAT_DISK_FS_SIZE).Trim();
                 }
 
                 if (this.BytesPerSector != 512)

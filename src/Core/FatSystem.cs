@@ -426,8 +426,8 @@ namespace fatcat.Core
                             {
                                 var changeDate = Utilities.ReadDateTime(buffer, FAT_CHANGE_DATE);
                                 var creationDate = Utilities.ReadDateTime(buffer, FAT_CREATION_DATE);
-                                entry = new FatEntry(longName, shortName, cluster, size, address, creationDate, changeDate, attributes);
-                                if (entry.IsCorrect() && IsValidCluster((ulong)entryCluster))
+                                entry = new FatEntry(longName, shortName, unchecked((ulong)entryCluster), size, address, creationDate, changeDate, attributes);
+                                if (entry.IsCorrect() && IsValidCluster(entry.Cluster))
                                 {
 
                                     localFound++;

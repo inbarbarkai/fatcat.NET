@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace fatcat.Core
 {
-    [DebuggerDisplay("Name = {ShortName}, IsDirectory = {IsDirectory}")]
+    [DebuggerDisplay("Name = {GetShortFileName()}, IsDirectory = {IsDirectory}")]
     public class FatEntry
     {
         public const ulong EntrySize = 0x20;

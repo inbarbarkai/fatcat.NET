@@ -171,7 +171,7 @@ namespace fatcat.Core
                     ulong rootDirSectors = (this.RootEntries * FatEntry.EntrySize + this.BytesPerSector - 1UL) / this.BytesPerSector;
                     ulong dataSectors = this.TotalSectors - (this.ReservedSectors + (ulong)this.Fats * this.SectorsPerFat + rootDirSectors);
                     ulong totalClusters = dataSectors / this.SectorsPerCluster;
-                    this.Bits = (totalClusters > MAX_FAT12) ? 16 : 12;
+                    this.Bits = (totalClusters > MAX_FAT12) ? 16u : 12u;
                 }
                 else
                 {

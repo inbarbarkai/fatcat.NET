@@ -149,7 +149,7 @@ namespace fatcat.Core
                 this.BytesPerSector = (ushort)(Utilities.ReadShort(buffer, FAT_BYTES_PER_SECTOR) & 0xffff);
                 this.SectorsPerCluster = (ulong)(buffer[FAT_SECTORS_PER_CLUSTER] & 0xff);
                 this.ReservedSectors = (ushort)(Utilities.ReadShort(buffer, FAT_RESERVED_SECTORS) & 0xffff);
-                this.OemName = Encoding.ASCII.GetString(buffer, FAT_DISK_OEM, FAT_DISK_OEM_SIZE).Trim('\0');
+                this.OemName = Encoding.UTF8.GetString(buffer, FAT_DISK_OEM, FAT_DISK_OEM_SIZE).Trim('\0');
                 this.Fats = buffer[FAT_FATS];
 
                 this.SectorsPerFat = (ushort)(Utilities.ReadShort(buffer, FAT16_SECTORS_PER_FAT) & 0xffff);
@@ -157,8 +157,8 @@ namespace fatcat.Core
                 if (this.SectorsPerFat != 0)
                 {
                     this.Type = FatType.Fat16;
-                    this.DiskLabel = Encoding.ASCII.GetString(buffer, FAT16_DISK_LABEL, FAT16_DISK_LABEL_SIZE).Trim();
-                    this.FsType = Encoding.ASCII.GetString(buffer, FAT16_DISK_FS, FAT16_DISK_FS_SIZE).Trim();
+                    this.DiskLabel = Encoding.UTF8.GetString(buffer, FAT16_DISK_LABEL, FAT16_DISK_LABEL_SIZE).Trim();
+                    this.FsType = Encoding.UTF8.GetString(buffer, FAT16_DISK_FS, FAT16_DISK_FS_SIZE).Trim();
                     this.RootEntries = (ushort)(Utilities.ReadShort(buffer, FAT16_ROOT_ENTRIES) & 0xffff);
                     this.RootDirectory = 0;
 
@@ -366,7 +366,7 @@ namespace fatcat.Core
             HashSet<ulong> visited = new HashSet<ulong>();
             var entries = new List<FatEntry>();
             var hasFreeClusters = false;
-            var filename = new StringBuilder();
+            var filename = new FatFileName();
             var clusters = 0;
 
             if (cluster == 0 && this.Type == FatType.Fat32)
@@ -381,7 +381,7 @@ namespace fatcat.Core
                 isValid = true;
             }
 
-            if (IsValidCluster(cluster))
+            if (!IsValidCluster(cluster))
             {
                 return null;
             }
@@ -417,15 +417,16 @@ namespace fatcat.Core
                         }
                         else
                         {
-                            var shortName = Encoding.ASCII.GetString(buffer, 0, 11);
-                            var longName = filename.ToString();
+                            var shortName = buffer.Decode(11);
+                            var longName = filename.Build();
                             var size = Utilities.ReadLong(buffer, FatEntry.FatOffsets.FileSize) & 0xffffffff;
                             var entryCluster = (Utilities.ReadShort(buffer, FatEntry.FatOffsets.ClusterLow) & 0xffff) | (Utilities.ReadShort(buffer, FatEntry.FatOffsets.ClusterHigh) << 16);
-                            var creationDate = Utilities.ReadDateTime(buffer, FAT_CREATION_DATE);
-                            var changeDate = Utilities.ReadDateTime(buffer, FAT_CHANGE_DATE);
-                            entry = new FatEntry(longName, shortName, cluster, size, address, creationDate, changeDate, attributes);
+
                             if (!buffer.Take((int)FatEntry.EntrySize).All(i => i == 0))
                             {
+                                var changeDate = Utilities.ReadDateTime(buffer, FAT_CHANGE_DATE);
+                                var creationDate = Utilities.ReadDateTime(buffer, FAT_CREATION_DATE);
+                                entry = new FatEntry(longName, shortName, cluster, size, address, creationDate, changeDate, attributes);
                                 if (entry.IsCorrect() && IsValidCluster((ulong)entryCluster))
                                 {
 
@@ -443,7 +444,6 @@ namespace fatcat.Core
                                     localBadEntries++;
                                     badEntries++;
                                 }
-
                                 localZero = false;
                             }
                             else
@@ -600,7 +600,7 @@ namespace fatcat.Core
         public async Task<FatEntry> FindDirectory(FatPath path, CancellationToken cancellationToken = default)
         {
             var cluster = this.RootDirectory;
-            FatEntry outputEntry = null;
+            var outputEntry = new FatEntry("/", "/", cluster, 0, 0, DateTime.MinValue, DateTime.MinValue, 0);
 
             for (int i = 0; i < path.Parts.Length; i++)
             {

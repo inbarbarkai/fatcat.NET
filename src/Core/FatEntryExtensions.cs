@@ -20,7 +20,7 @@ namespace fatcat.Core
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

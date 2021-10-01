@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace fatcat
 {
@@ -49,6 +50,7 @@ namespace fatcat
         }
 
         static readonly char[] Units = new char[] { 'B', 'K', 'M', 'G', 'T', 'P' };
+
         internal static string PrettySize(ulong bytes)
         {
             double size = bytes;
@@ -62,5 +64,14 @@ namespace fatcat
 
             return $"{size}{Units[n]}";
         }
+
+        internal static string Decode(this byte[] bytes)
+            => Encoding.UTF8.GetString(bytes);
+
+        internal static string Decode(this byte[] bytes, int count)
+            => Encoding.UTF8.GetString(bytes, 0, count);
+
+        internal static string Decode(this byte[] bytes, int index, int count)
+            => Encoding.UTF8.GetString(bytes, index, count);
     }
 }

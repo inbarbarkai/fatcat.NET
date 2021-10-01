@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 
 namespace fatcat.Core
 {
+    [DebuggerDisplay("Name = {ShortName}, IsDirectory = {IsDirectory}")]
     public class FatEntry
     {
         public const ulong EntrySize = 0x20;
@@ -18,10 +20,10 @@ namespace fatcat.Core
         // Attributes
         public class FatAttributes
         {
-            public const int Hide = (1 << 1);
-            public const int Dir = (1 << 4);
-            public const int LongFile = (0xf);
-            public const int File = (0x20);
+            public const byte Hide = (1 << 1);
+            public const byte Dir = (1 << 4);
+            public const byte LongFile = (0xf);
+            public const byte File = (0x20);
         }
         // Prefix used for erased files
         public const int Erased = 0xe5;

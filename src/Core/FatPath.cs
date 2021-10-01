@@ -14,7 +14,7 @@ namespace fatcat.Core
                 throw new ArgumentNullException(nameof(path));
             }
             this.Path = path;
-            this.Parts = path.Split(PathDelimiter);
+            this.Parts = path.Split(PathDelimiter, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public string Path { get; }

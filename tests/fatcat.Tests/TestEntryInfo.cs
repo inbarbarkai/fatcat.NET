@@ -28,12 +28,14 @@ namespace fatcat.Tests
         {
             this.Name = info.GetValue<string>(nameof(Name));
             this.IsDirectory = info.GetValue<bool>(nameof(IsDirectory));
+            this.IsDeleted = info.GetValue<bool>(nameof(IsDeleted));
         }
 
         public void Serialize(IXunitSerializationInfo info)
         {
             info.AddValue(nameof(Name), this.Name);
             info.AddValue(nameof(IsDirectory), this.IsDirectory);
+            info.AddValue(nameof(IsDeleted), this.IsDeleted);
         }
 
         public bool Equals(FatEntry other)

@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+#if NETSTANDARD2_0
+using fatcat.IO;
+#endif
 
 namespace fatcat.Core
 {
@@ -708,7 +711,11 @@ namespace fatcat.Core
                     {
                         if (random)
                         {
-                            randomGenerator.NextBytes(buffer.AsSpan(0, (int)this.BytesPerCluster));
+#if NETSTANDARD2_1
+                            randomGenerator.NextBytes(buffer.AsSpan(0, (int)this.BytesPerCluster)); 
+#else
+                            randomGenerator.NextBytes(buffer);
+#endif
                         }
                         await WriteData(GetClusterAddress(cluster), buffer.AsMemory(0, (int)this.BytesPerCluster), cancellationToken);
                         total++;

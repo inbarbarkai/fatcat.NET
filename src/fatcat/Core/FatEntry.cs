@@ -67,7 +67,7 @@ namespace fatcat.Core
             var name = this.ShortName.Substring(0, 8);
             if (this.IsErased)
             {
-                name = name[1..];
+                name = name.Substring(1);
             }
             if (string.IsNullOrEmpty(ext))
             {

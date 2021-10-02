@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fatcat", "src\fatcat.csproj", "{96E114A3-9C3C-4CEF-A20C-A004F52E5B4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fatcat", "src\fatcat\fatcat.csproj", "{96E114A3-9C3C-4CEF-A20C-A004F52E5B4E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fatcat.Tests", "tests\fatcat.Tests\fatcat.Tests.csproj", "{04E705D1-54B0-49DA-8496-104B34429A5C}"
 EndProject

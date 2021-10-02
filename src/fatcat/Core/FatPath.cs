@@ -5,7 +5,11 @@ namespace fatcat.Core
 {
     public class FatPath
     {
-        public const char PathDelimiter = '/';
+#if NETSTANDARD2_1
+        public const char PathDelimiter = '/'; 
+#else
+        public readonly char[] PathDelimiter = new[] { '/' };
+#endif
 
         public FatPath(string path)
         {
@@ -14,7 +18,7 @@ namespace fatcat.Core
                 throw new ArgumentNullException(nameof(path));
             }
             this.Path = path;
-            this.Parts = path.Split(PathDelimiter, StringSplitOptions.RemoveEmptyEntries);
+            this.Parts = path.Split(PathDelimiter, StringSplitOptions.RemoveEmptyEntries); 
         }
 
         public string Path { get; }

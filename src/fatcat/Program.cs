@@ -16,7 +16,7 @@ namespace fatcat
                     .AddLogging()
                     .AddSingleton<FatSystem>()
                     .BuildServiceProvider();
-            var result = Parser.Default.ParseArguments(args, typeof(ListPath));
+            var result = Parser.Default.ParseArguments(args, typeof(ListPath), typeof(ReadFile));
             var tasks = new List<Task>();
             tasks.Add(result.WithParsedAsync<ListPath>(async o =>
             {
@@ -25,6 +25,24 @@ namespace fatcat
                     var system = serviceProvider.GetRequiredService<FatSystem>();
                     await system.Initialize(stream, o.GlobalOffset).ConfigureAwait(false);
                     await system.List(o.Path, o.ListDeleted);
+                }
+            }));
+
+            tasks.Add(result.WithParsedAsync<ReadFile>(async o =>
+            {
+                using (var stream = File.OpenRead(o.ImagePath))
+                using (var output = File.OpenWrite(o.Output))
+                {
+                    var system = serviceProvider.GetRequiredService<FatSystem>();
+                    await system.Initialize(stream, o.GlobalOffset).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(o.Path))
+                    {
+                        await system.ReadFile(o.Cluster, o.Size, output, o.IsDeleted);
+                    }
+                    else
+                    {
+                        await system.ReadFile(o.Path, output);
+                    }
                 }
             }));
 

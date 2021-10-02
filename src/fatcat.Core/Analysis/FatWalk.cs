@@ -24,7 +24,7 @@ namespace fatcat.Analysis
             }
             else
             {
-                root = new FatEntry("/", "/", cluster, 0, 0, DateTime.MinValue, DateTime.MinValue, FatEntry.FatAttributes.Dir);
+                root = new FatEntry("/", "/", cluster, 0, 0, DateTime.MinValue, DateTime.MinValue, FatEntry.FatAttributes.Dir, false);
             }
             var visited = new HashSet<ulong>();
             await this.OnEntry(root, root, "/", cancellationToken).ConfigureAwait(false);

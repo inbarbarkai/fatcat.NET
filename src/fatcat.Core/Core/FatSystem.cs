@@ -421,6 +421,7 @@ namespace fatcat.Core
                         else
                         {
                             var shortName = buffer.Decode(11);
+                            var isErased = (buffer[0] & 0xff) == FatEntry.Erased;
                             var longName = filename.Build();
                             var size = Utilities.ReadLong(buffer, FatEntry.FatOffsets.FileSize) & 0xffffffff;
                             var entryCluster = (Utilities.ReadShort(buffer, FatEntry.FatOffsets.ClusterLow) & 0xffff) | (Utilities.ReadShort(buffer, FatEntry.FatOffsets.ClusterHigh) << 16);
@@ -429,7 +430,7 @@ namespace fatcat.Core
                             {
                                 var changeDate = Utilities.ReadDateTime(buffer, FAT_CHANGE_DATE);
                                 var creationDate = Utilities.ReadDateTime(buffer, FAT_CREATION_DATE);
-                                entry = new FatEntry(longName, shortName, unchecked((ulong)entryCluster), size, address, creationDate, changeDate, attributes);
+                                entry = new FatEntry(longName, shortName, unchecked((ulong)entryCluster), size, address, creationDate, changeDate, attributes, isErased);
                                 if (entry.IsCorrect() && IsValidCluster(entry.Cluster))
                                 {
 
@@ -603,7 +604,7 @@ namespace fatcat.Core
         public async Task<FatEntry> FindDirectory(FatPath path, CancellationToken cancellationToken = default)
         {
             var cluster = this.RootDirectory;
-            var outputEntry = new FatEntry("/", "/", cluster, 0, 0, DateTime.MinValue, DateTime.MinValue, 0);
+            var outputEntry = this.GetRootEntry();
 
             for (int i = 0; i < path.Parts.Length; i++)
             {
@@ -671,7 +672,7 @@ namespace fatcat.Core
             }
         }
 
-        public FatEntry GetRootEntry() => new("/", "/", RootDirectory, 0, 0, DateTime.MinValue, DateTime.MinValue, FatEntry.FatAttributes.Dir);
+        public FatEntry GetRootEntry() => new("/", "/", RootDirectory, 0, 0, DateTime.MinValue, DateTime.MinValue, FatEntry.FatAttributes.Dir, false);
 
         public async Task<bool> IsFreeCluster(ulong cluster, CancellationToken cancellationToken = default)
         {

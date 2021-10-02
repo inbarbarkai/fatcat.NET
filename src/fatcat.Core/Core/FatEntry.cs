@@ -27,7 +27,7 @@ namespace fatcat.Core
         }
         // Prefix used for erased files
         public const int Erased = 0xe5;
-        public FatEntry(string longName, string shortName, ulong cluster, ulong size, long address, DateTime creationDate, DateTime changeDate, byte attributes)
+        public FatEntry(string longName, string shortName, ulong cluster, ulong size, long address, DateTime creationDate, DateTime changeDate, byte attributes, bool isErased)
         {
             this.LongName = longName;
             this.ShortName = shortName;
@@ -37,12 +37,13 @@ namespace fatcat.Core
             this.CreationDate = creationDate;
             this.ChangeDate = changeDate;
             this.Attributes = attributes;
+            this.IsErased = isErased;
         }
 
         public bool IsDirectory => (this.Attributes & FatAttributes.Dir) == FatAttributes.Dir;
         public bool IsFile => (this.Attributes & FatAttributes.File) == FatAttributes.File;
         public bool IsHidden => (this.Attributes & FatAttributes.Hide) == FatAttributes.Hide;
-        public bool IsErased => (this.ShortName[0] & 0xff) == Erased;
+        public bool IsErased { get; }
         public string ShortName { get; }
         public string LongName { get; }
         public byte Attributes { get; }

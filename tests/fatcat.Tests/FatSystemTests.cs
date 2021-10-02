@@ -49,7 +49,7 @@ namespace fatcat.Tests
             entries.Entries.Count.Should().Be(expectedEntries.Length);
             foreach (var entry in expectedEntries)
             {
-                entries.Entries.Should().Contain(e => e.LongName == entry.Name && e.IsDirectory == entry.IsDirectory);
+                entries.Entries.Should().Contain(e => entry.Equals(e));
             }
         }
 
@@ -58,6 +58,7 @@ namespace fatcat.Tests
             const string imagePath = "hello-world.img";
             yield return new object[] { imagePath, "/", new[] { new TestEntryInfo("files", true), new TestEntryInfo("hello.txt", false) } };
             yield return new object[] { imagePath, "/files/", new[] { new TestEntryInfo("other_file.txt", false), new TestEntryInfo("", true) } };
+            yield return new object[] { "deleted.img", "/", new[] { new TestEntryInfo("deleted", true, true) } };
         }
 
         [Fact]
@@ -76,6 +77,7 @@ namespace fatcat.Tests
 
         [InlineData("hello-world.img", "/hello.txt", "Hello world!\n")]
         [InlineData("hello-world.img", "/files/other_file.txt", "Hello!\nThis is another file!\n")]
+        [InlineData("deleted.img", "/deleted/file.txt", "This file was deleted!\n")]
         [Theory]
         public async Task ReadFileTest(string imagePath, string filePath, string expectedContent)
         {

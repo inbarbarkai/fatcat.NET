@@ -32,7 +32,11 @@ namespace fatcat.Core
                 var name = "/";
                 foreach (var part in this.Parts.Take(this.Parts.Length - 1))
                 {
+#if NETSTANDARD2_1
                     name += part + PathDelimiter;
+#else
+                    name += part + PathDelimiter[0];
+#endif
                 }
                 return name;
             }

@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace fatcat.Core
 {
+    [DebuggerDisplay("{Path}")]
     public class FatPath
     {
 #if NETSTANDARD2_1
@@ -27,7 +29,7 @@ namespace fatcat.Core
         {
             get
             {
-                var name = "";
+                var name = "/";
                 foreach (var part in this.Parts.Take(this.Parts.Length - 1))
                 {
                     name += part + PathDelimiter;

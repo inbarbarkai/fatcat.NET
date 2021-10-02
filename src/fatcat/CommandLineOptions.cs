@@ -4,7 +4,7 @@ namespace fatcat
 {
     public abstract class CommandLineOptions
     {
-        [Option(Required = true)]
+        [Option('i', "image", Required = true)]
         public string ImagePath { get; set; }
 
         [Option('O', "offset", Default = 0)]

@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace fatcat
 {
-    internal class Program
+    public static class Program
     {
-        private static Task Main(string[] args)
+        public static Task Main(string[] args)
         {
             var serviceProvider = new ServiceCollection()
-                .AddLogging()
-                .AddSingleton<FatSystem>()
-                .BuildServiceProvider();
+                    .AddLogging()
+                    .AddSingleton<FatSystem>()
+                    .BuildServiceProvider();
             var result = Parser.Default.ParseArguments(args, typeof(ListPath));
             var tasks = new List<Task>();
             tasks.Add(result.WithParsedAsync<ListPath>(async o =>

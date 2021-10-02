@@ -19,11 +19,9 @@ namespace fatcat.Display
 
         public static async Task List(this FatSystem system, ulong cluster, bool listDeleted = false, CancellationToken cancellationToken = default)
         {
-            bool hasFree = false;
             var entries = await system.GetEntries(cluster, cancellationToken).ConfigureAwait(false);
-
             Console.WriteLine("Directory cluster: {0}", cluster);
-            if (hasFree)
+            if (entries.HasFreeClusters)
             {
                 Console.WriteLine("Warning: this directory has free clusters that was read contiguously.");
             }
@@ -48,7 +46,7 @@ namespace fatcat.Display
                     Console.Write("f");
                 }
 
-                string name = entry.GetFileName();
+                string name = "/" + entry.GetFileName();
                 if (entry.IsDirectory)
                 {
                     name += "/";
@@ -61,7 +59,7 @@ namespace fatcat.Display
                 }
 
                 Console.Write(" {0:yyyy-MM-dd HH:mm:ss} ", entry.ChangeDate);
-                Console.Write(" %-50s", name);
+                Console.Write(" {0}", name.PadLeft(50));
 
                 Console.Write(" c={0}", entry.Cluster);
 

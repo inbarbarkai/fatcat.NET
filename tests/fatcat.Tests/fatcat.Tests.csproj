@@ -26,6 +26,6 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\fatcat\fatcat.csproj" />
+	  <ProjectReference Include="..\..\src\fatcat\fatcat.Core.csproj" />
 	</ItemGroup>
 </Project>

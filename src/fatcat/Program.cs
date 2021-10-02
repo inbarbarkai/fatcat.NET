@@ -24,7 +24,7 @@ namespace fatcat
                 {
                     var system = serviceProvider.GetRequiredService<FatSystem>();
                     await system.Initialize(stream, o.GlobalOffset).ConfigureAwait(false);
-                    await system.List(new FatPath(o.Path), o.ListDeleted);
+                    await system.List(o.Path, o.ListDeleted);
                 }
             }));
 
